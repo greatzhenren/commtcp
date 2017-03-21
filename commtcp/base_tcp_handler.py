@@ -10,6 +10,7 @@ from commtcp.online import get_session, set_session, Session
 
 class BaseTcpHandler(StreamRequestHandler):
     iv = b'6agvtLexcRYZjV6H'
+    _aes = None
 
     @classmethod
     def set_key(cls, key):
@@ -31,7 +32,7 @@ class BaseTcpHandler(StreamRequestHandler):
             self._login(paras['u'], paras['p'])
         else:
             if session_id == None or not get_session(session_id):
-                self.send_err('{"err":"SESSION"}')
+                self.send_err('{"code":"SESSION"}')
             else:
                 session = get_session(session_id)
                 session.active()
@@ -41,20 +42,20 @@ class BaseTcpHandler(StreamRequestHandler):
                     self.msg_handle(command, paras)
 
     def command(self, cmd, paras):
-        '''
+        """
         客户端向服务器发出的命令，由子类实现
         :param cmd:
         :param paras:
         :return:
-        '''
+        """
         pass
 
     def msg_handle(self, command, paras):
-        '''
+        """
         消息处理，由子类实现
         :param command: 消息类型编号
         :param paras: 参数
-        '''
+        """
         pass
 
     def send_msg(self, msg):
@@ -74,12 +75,12 @@ class BaseTcpHandler(StreamRequestHandler):
             self.send_err('{"code":"LOGIN_FAIL"}')
 
     def check_auth(self, username, password):
-        '''
+        """
         判断用户名和密码是否正确，由子类实现
         :param username: 用户名
         :param password: 密码
         :return: 是否合法用户和密码
-        '''
+        """
         return True
 
     def _msg_bytes(self, msg, suc=1):
