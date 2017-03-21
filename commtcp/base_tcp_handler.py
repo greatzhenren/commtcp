@@ -67,7 +67,6 @@ class BaseTcpHandler(StreamRequestHandler):
     def _login(self, username, passoword):
         if self.check_auth(username, passoword):
             session_id = commtcp.util.makePassword(10)
-
             session = Session(self.client_address, session_id, username, commtcp.session_time_out)
             set_session(session_id, session)
             self.send_msg(session_id)
