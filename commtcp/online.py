@@ -6,18 +6,31 @@ _session_coll = {}
 
 
 def get_session(session_id):
+    """
+    通过Session的唯一标识获取Session
+    :param session_id: Session的唯一标识
+    :return: Session，如果没有找到，返回None
+    """
     if session_id in _session_coll:
         return _session_coll[session_id]
     return None
 
 
 def set_session(session_id, session):
+    """
+    往队列中添加Session，或者改变重变Session
+    :param session_id: session的唯一标识
+    :param session: Session实体
+    """
     _lock.acquire()
     _session_coll[session_id] = session
     _lock.release()
 
 
 def del_all_expire():
+    """
+    删除过期Session
+    """
     now = datetime.now()
     _lock.acquire()
     for id in list(_session_coll):

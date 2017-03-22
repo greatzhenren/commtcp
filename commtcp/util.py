@@ -4,5 +4,5 @@ import string
 letters = string.ascii_letters + string.digits
 
 
-def makePassword(length):
+def make_password(length):
     return ''.join([random.choice(letters) for _ in range(length)])

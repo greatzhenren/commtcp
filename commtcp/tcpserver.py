@@ -4,19 +4,31 @@ from commtcp import online
 import time
 
 
-def start(ip, port, handler):
-    tr = Thread(target=_del_sessions)
-    tr.start()
-    addr = (ip, port)
-    server = MyThreadingTCPServer(addr, handler)
-    server.serve_forever()
-    server.handle_timeout()
+class CommTcpServer:
+    def __init__(self):
+        self._server=None
 
 
-def _del_sessions():
-    while (True):
-        online.del_all_expire()
-        time.sleep(5)
+    def start(self, ip, port, handler):
+        self._is_exit = False
+        tr = Thread(target=self._del_sessions)
+        tr.start()
+        addr = (ip, port)
+        self._server = MyThreadingTCPServer(addr, handler)
+        self._server.serve_forever()
+        self._server.handle_timeout()
+
+    def shutdown(self):
+        self._is_exit=True
+        self._server.shutdown()
+
+    def _del_sessions(self):
+        """
+        每隔5秒检查一次Session列表，删除过期的Session
+        """
+        while (not self._is_exit):
+            online.del_all_expire()
+            time.sleep(5)
 
 
 class MyThreadingTCPServer(ThreadingMixIn, TCPServer):

@@ -2,6 +2,9 @@ command_id = {
     'CommonString': 1,
     'Login': 2,
     'Command': 3,
+    'Admin': 4,
+    'Heartbeat': 5,
+    'Logout': 6,
     'SQL': 50
 }
 

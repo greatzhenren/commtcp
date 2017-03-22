@@ -38,6 +38,8 @@ class BaseTcpHandler(StreamRequestHandler):
                 session.active()
                 if command == command_id['Command']:
                     self.command(paras['cmd'], paras['para'])
+                elif command == command_id['Admin']:
+                    self.admin(paras['cmd'], paras['para'])
                 else:
                     self.msg_handle(command, paras)
 
@@ -46,6 +48,16 @@ class BaseTcpHandler(StreamRequestHandler):
         客户端向服务器发出的命令，由子类实现
         :param cmd:
         :param paras:
+        :return:
+        """
+        pass
+
+    def admin(selfs,cmd,paras):
+        """
+        客户端以管理员身份向服务器发出的命令，由子类实现
+        设计时注意权限控制
+        :param cmd: 命令名称
+        :param paras: 参数
         :return:
         """
         pass
@@ -66,7 +78,7 @@ class BaseTcpHandler(StreamRequestHandler):
 
     def _login(self, username, passoword):
         if self.check_auth(username, passoword):
-            session_id = commtcp.util.makePassword(10)
+            session_id = commtcp.util.make_password(10)
             session = Session(self.client_address, session_id, username, commtcp.session_time_out)
             set_session(session_id, session)
             self.send_msg(session_id)
