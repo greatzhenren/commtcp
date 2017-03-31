@@ -51,7 +51,7 @@ class Session:
 
     @property
     def username(self):
-        return self.username()
+        return self._username
 
     @property
     def active_time(self):

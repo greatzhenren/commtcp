@@ -9,4 +9,5 @@ command_id = {
 }
 
 # Session会话超时时间，单位：秒
-session_time_out = 20
+SESSION_TIME_OUT = 20
+ACT_LOG_RECODE = True

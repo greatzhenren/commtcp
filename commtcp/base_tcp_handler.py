@@ -1,6 +1,7 @@
 import json
 from socketserver import StreamRequestHandler
 from struct import calcsize, unpack, pack
+import datetime
 
 import commtcp.crypto
 import commtcp.util
@@ -11,6 +12,10 @@ from commtcp.online import get_session, set_session, Session
 class BaseTcpHandler(StreamRequestHandler):
     iv = b'6agvtLexcRYZjV6H'
     _aes = None
+
+    def setup(self):
+        super().setup()
+        self._session = None
 
     @classmethod
     def set_key(cls, key):
@@ -34,8 +39,11 @@ class BaseTcpHandler(StreamRequestHandler):
             if session_id == None or not get_session(session_id):
                 self.send_err('{"code":"SESSION"}')
             else:
-                session = get_session(session_id)
-                session.active()
+                self._session = get_session(session_id)
+                self._session.active()
+                if commtcp.ACT_LOG_RECODE:
+                    print('SESSION:{} {} {} {}'.format(datetime.datetime.now(), self._session.username,
+                                                       self._session.session_id, self.client_address))
                 if command == command_id['Command']:
                     self.command(paras['cmd'], paras['para'])
                 elif command == command_id['Admin']:
@@ -52,7 +60,7 @@ class BaseTcpHandler(StreamRequestHandler):
         """
         pass
 
-    def admin(selfs,cmd,paras):
+    def admin(selfs, cmd, paras):
         """
         客户端以管理员身份向服务器发出的命令，由子类实现
         设计时注意权限控制
@@ -79,7 +87,7 @@ class BaseTcpHandler(StreamRequestHandler):
     def _login(self, username, passoword):
         if self.check_auth(username, passoword):
             session_id = commtcp.util.make_password(10)
-            session = Session(self.client_address, session_id, username, commtcp.session_time_out)
+            session = Session(self.client_address, session_id, username, commtcp.SESSION_TIME_OUT)
             set_session(session_id, session)
             self.send_msg(session_id)
         else:

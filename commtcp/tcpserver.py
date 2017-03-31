@@ -6,11 +6,10 @@ import time
 
 class CommTcpServer:
     def __init__(self):
-        self._server=None
-
+        self._is_exit = False
+        self._server = None
 
     def start(self, ip, port, handler):
-        self._is_exit = False
         tr = Thread(target=self._del_sessions)
         tr.start()
         addr = (ip, port)
@@ -19,7 +18,7 @@ class CommTcpServer:
         self._server.handle_timeout()
 
     def shutdown(self):
-        self._is_exit=True
+        self._is_exit = True
         self._server.shutdown()
 
     def _del_sessions(self):
