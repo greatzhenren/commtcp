@@ -10,4 +10,4 @@ command_id = {
 
 # Session会话超时时间，单位：秒
 SESSION_TIME_OUT = 20
-ACT_LOG_RECODE = True
+ACT_LOG_RECODE = False

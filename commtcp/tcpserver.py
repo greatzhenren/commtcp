@@ -16,6 +16,7 @@ class CommTcpServer:
         self._server = MyThreadingTCPServer(addr, handler)
         self._server.serve_forever()
         self._server.handle_timeout()
+        self._server.handle_error()
 
     def shutdown(self):
         self._is_exit = True
